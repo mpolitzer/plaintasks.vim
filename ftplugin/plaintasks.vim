@@ -8,12 +8,14 @@ if exists("b:did_ftplugin")
   finish
 endif
 
-nnoremap <silent> <buffer> + :call NewTask()<cr>A
-vnoremap <silent> <buffer> + :call NewTask()<cr>
-noremap <silent> <buffer> = :call ToggleComplete()<cr>
-noremap <silent> <buffer> <C-M> :call ToggleCancel()<cr>
-nnoremap <silent> <buffer> - :call ArchiveTasks()<cr>
-abbr -- <c-r>=Separator()<cr>
+nnoremap <silent> <buffer> +     :call NewTask()<cr>A
+vnoremap <silent> <buffer> +     :call NewTask()<cr>
+noremap  <silent> <buffer> =     :call ToggleComplete()<cr>
+noremap  <silent> <buffer> <C-M> :call ToggleCancel()<cr>
+noremap  <silent> <buffer> *     :call ToggleBlocked()<cr>
+nnoremap <silent> <buffer> -     :call ArchiveTasks()<cr>
+abbr ssep <c-r>=Sseparator()<cr>
+abbr lsep <c-r>=Lseparator()<cr>
 
 " when pressing enter within a task it creates another task
 setlocal comments+=n:☐
@@ -26,7 +28,20 @@ function! ToggleComplete()
   elseif line =~ "^ *☐"
     s/^\( *\)☐/\1✔/
     let text = " @done (" . strftime("%Y-%m-%d %H:%M") .")"
-    exec "normal A" . text
+    exec "normal A" . printf("%*s", 82-strlen(line), text)
+    normal _
+  endif
+endfunc
+
+function! ToggleBlocked()
+  let line = getline('.')
+  if line =~ "^ *⚠"
+    s/^\( *\)⚠/\1☐/
+    s/ *@blocked.*$//
+  elseif line =~ "^ *☐"
+    s/^\( *\)☐/\1⚠/
+    let text = " @blocked (" . strftime("%Y-%m-%d %H:%M") .")"
+    exec "normal A" . printf("%*s", 82-strlen(line), text)
     normal _
   endif
 endfunc
@@ -39,7 +54,7 @@ function! ToggleCancel()
   elseif line =~ "^ *☐"
     s/^\( *\)☐/\1✘/
     let text = " @cancelled (" . strftime("%Y-%m-%d %H:%M") .")"
-    exec "normal A" . text
+    exec "normal A" . printf("%*s", 82-strlen(line), text)
     normal _
   endif
 endfunc
@@ -47,21 +62,21 @@ endfunc
 function! NewTask()
   let line=getline('.')
   if line =~ "^ *$"
-    normal A☐ 
+    normal A  ☐ - 
   else
-    normal I☐ 
+    normal I  ☐ - 
   end
 endfunc
 
 function! ArchiveTasks()
     let orig_line=line('.')
     let orig_col=col('.')
-    let archive_start = search("^Archive:")
+    let archive_start = search("^+ archive:")
     if (archive_start == 0)
         call cursor(line('$'), 1)
         normal 2o
-        normal iArchive:
-        normal o＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿＿
+        normal i+ archive:
+        normal o================================================================================
         let archive_start = line('$') - 1
     endif
     call cursor(1,1)
@@ -89,11 +104,10 @@ function! ArchiveTasks()
     call cursor(orig_line, orig_col)
 endfunc
 
-function! Separator()
-    let line = getline('.')
-    if line =~ "^-*$"
-      return "--- ✄ -----------------------"
-    else
-      return "--"
-    end
+function! Sseparator()
+	return "--------------------------------------------------------------------------------"
+endfunc
+
+function! Lseparator()
+	return "================================================================================"
 endfunc
