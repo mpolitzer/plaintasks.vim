@@ -19,10 +19,9 @@ Keyboard Shortcuts
 
 **Normal-mode / Visual-mode**
 ```
-+     : NewTask [Also works in visual mode]
-+     : NewTask
-=     : ToggleComplete
-<C-M> : ToggleCancel
-*     : ToggleBlocked
--     : ArchiveTasks
++     NewTask
+<C-M> ToggleComplete
+-     ToggleCancel
+*     ToggleBlocked
+=     ArchiveTasks
 ```

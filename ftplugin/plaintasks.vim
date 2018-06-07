@@ -10,10 +10,10 @@ endif
 
 nnoremap <silent> <buffer> +     :call NewTask()<cr>A
 vnoremap <silent> <buffer> +     :call NewTask()<cr>
-noremap  <silent> <buffer> =     :call ToggleComplete()<cr>
-noremap  <silent> <buffer> <C-M> :call ToggleCancel()<cr>
+noremap  <silent> <buffer> <C-M> :call ToggleComplete()<cr>
+noremap  <silent> <buffer> -     :call ToggleCancel()<cr>
 noremap  <silent> <buffer> *     :call ToggleBlocked()<cr>
-nnoremap <silent> <buffer> -     :call ArchiveTasks()<cr>
+nnoremap <silent> <buffer> =     :call ArchiveTasks()<cr>
 abbr ssep <c-r>=Sseparator()<cr>
 abbr lsep <c-r>=Lseparator()<cr>
 
